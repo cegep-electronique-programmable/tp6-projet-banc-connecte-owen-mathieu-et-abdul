@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include "affichage.h"
+#include "DEL.h"
+#include "Proximite.h"
 
 // the setup function runs once when you press reset or power the board
 void setup() {
