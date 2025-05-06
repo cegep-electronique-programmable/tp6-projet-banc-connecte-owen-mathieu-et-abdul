@@ -17,6 +17,8 @@
 
 void afficherInfo(uint16_t nbrPresence, uint16_t nbrCharge);
 
+void Imprime(const char* Message, int CordX, int CordY);
+
 
 
 
