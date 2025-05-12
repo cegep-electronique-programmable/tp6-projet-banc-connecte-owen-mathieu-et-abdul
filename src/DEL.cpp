@@ -1,4 +1,10 @@
 #include "DEL.h"
+#include <Arduino.h>
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+ #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
+#endif
+#include "DEL.h"
 
 void setup() {
   // Initialiser les LEDs et les capteurs
