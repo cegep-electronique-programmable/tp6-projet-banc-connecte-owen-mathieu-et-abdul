@@ -1,30 +1,60 @@
 #include "DEL.h"
-#include <Arduino.h>
-#include <Adafruit_NeoPixel.h>
-#ifdef __AVR__
- #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
-#endif
-#include "DEL.h"
 
-void setup() {
-  // Initialiser les LEDs et les capteurs
-  pinMode(LED_BUILTIN, OUTPUT);
-  run();
-  Serial.begin(9600); // Pour déboguer et afficher des informations
+#define PIN         1 
+#define NUMPIXELS   10 
+#define BRIGHTNESS  50 
+
+#define LIGHT_SENSOR_PIN A0
+
+
+Adafruit_NeoPixel strip(64, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
+#define DELAYVAL 500
+
+
+void run() {
+  #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
+    clock_prescale_set(clock_div_1);
+  #endif
+    pixels.begin();
+    strip.show();
+    strip.setBrightness(BRIGHTNESS); 
 }
 
-void loop() {
-  setBrightness(); // Ajuster la luminosité selon l'environnement
+void verte() {
+  pixels.clear(); 
+  for (int i = 0; i < NUMPIXELS; i++) { 
+    pixels.setPixelColor(i, pixels.Color(0, 150, 0));
+    pixels.show();  
+    delay(DELAYVAL); 
+  }  
+}
 
-  // Simuler l'état de charge
-  bool isCharging = true; // Mettre à jour cette variable en fonction de l'état réel du chargeur
+void rouge() {
+  pixels.clear(); 
+  for (int i = 0; i < NUMPIXELS; i++) { 
+    pixels.setPixelColor(i, pixels.Color(255, 0, 0));
+    pixels.show();  
+    delay(DELAYVAL); 
+  }  
+}
+void jaune() {
+  pixels.clear(); 
+  for (int i = 0; i < NUMPIXELS; i++) { 
+    pixels.setPixelColor(i, pixels.Color(255, 255, 0));
+    pixels.show();  
+    delay(DELAYVAL); 
+  }  
+}
+int adjustBrightness() {
+  int lightLevel = analogRead(LIGHT_SENSOR_PIN);
+  int brightness = map(lightLevel, 0, 1023, 255, 50);
+  return brightness;
+}
 
-  // Si l'appareil est en charge, allumer les LEDs en rouge, sinon en jaune
-  if (isCharging) {
-    rouge(); // Charge active
-  } else {
-    jaune(); // Pas en charge
-  }
-
-  delay(1000); // Attendre 1 seconde avant la prochaine mise à jour
+void setBrightness(int brightness) {
+  int brightness = adjustBrightness();
+  strip.setBrightness(brightness);
+  pixels.setBrightness(brightness);
 }
