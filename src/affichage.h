@@ -19,13 +19,12 @@
 
 void AfficherInfo(uint16_t nbrPresence, uint16_t nbrCharge);
 
-void Imprime(const char* Message, int CordX, int CordY);
+void AfficherImage(int CordX, int CordY, int Width, int Height, const uint8_t *bitmap);
 
 void SetFont(const uint8_t* Font);
 
 void ClearScreen();
 
 void StartScreen();
-
 
 #endif

@@ -19,15 +19,15 @@ void SetFont(const uint8_t* Font){
   u8g2.setFontDirection(0);
 }
 
-void Imprime(const char* Message, int CordX, int CordY) {
-  u8g2.setCursor(CordX, CordY);
-  u8g2.print(Message);
-  u8g2.sendBuffer();
-}
-
 void ClearScreen(){
   u8g2.clearBuffer();
-  Imprime("", 0, 0);
+}
+
+void AfficherImage(int CordX, int CordY, int Width, int Height, const uint8_t *bitmap){
+    u8g2.firstPage();
+  do {
+    u8g2.drawXBMP(CordX, CordY, Width, Height, bitmap);		// Chinese "Hello World" 
+  } while ( u8g2.nextPage() );
 }
 
 void AfficherInfo(uint16_t nbrPresence, uint16_t nbrCharge){
@@ -37,6 +37,11 @@ void AfficherInfo(uint16_t nbrPresence, uint16_t nbrCharge){
   char ChargeS[20] = {0};
   itoa(nbrCharge, ChargeS, 10);
   SetFont(u8g2_font_unifont_t_chinese2);
-  Imprime(PresenceS, 0, 14);
-  Imprime(ChargeS, 0, 30);
+  u8g2.firstPage();
+  do {
+    u8g2.setCursor(0, 14);
+    u8g2.print(PresenceS);
+    u8g2.setCursor(0, 30);
+    u8g2.print(ChargeS); 
+  } while ( u8g2.nextPage() );
 }
