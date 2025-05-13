@@ -78,7 +78,7 @@ void loop() {
     Serial.print(proximity_data);
 
     // This is an ugly hack to reduce sensor noise.
-    // You may want to adjust POFFSET instead.
+    // You may want to adjust POFFSET instea.
     /*
     proximity_data -= 200;
     if (proximity_data > 50000) {
