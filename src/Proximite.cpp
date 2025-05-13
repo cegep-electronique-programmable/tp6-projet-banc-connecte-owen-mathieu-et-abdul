@@ -2,7 +2,7 @@
 
 
 
-APDS9930 apds = APDS9930();
+/*APDS9930 apds = APDS9930();
 uint16_t proximity_data = 0;
 
 
@@ -26,7 +26,7 @@ void intproxi (){
 void loop2(void){
     apds.readProximity(proximity_data);
     
-}
+}*/
  
 
  
