@@ -3,7 +3,7 @@
 
 
 APDS9930 apds = APDS9930();
-
+uint16_t proximity_data = 0;
 
 
 
@@ -20,6 +20,11 @@ void intproxi (){
     apds.setProximityGain(PGAIN_2X);
     apds.enableProximitySensor(true);
     apds.enableLightSensor(true);
+    
+}
+
+void loop2(void){
+    apds.readProximity(proximity_data);
     
 }
  
