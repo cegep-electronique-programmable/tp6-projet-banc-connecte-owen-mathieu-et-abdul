@@ -3,7 +3,8 @@
 #include "DEL.h"
 #include "Proximite.h"
 
-
+#define DUMP_REGS
+#define PWM_LED_PIN       10
 
 #define MasterPiece_width 128
 #define MasterPiece_height 64
@@ -100,12 +101,75 @@ void setup() {
   // Initialiser les LEDs et les capteurs
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600); // Pour déboguer et afficher des informations
+  //Proximite
+  Serial.println();
+  Serial.println(F("------------------------"));
+  Serial.println(F("APDS-9930 - ProximityLED"));
+  Serial.println(F("------------------------"));
+  
+  // Initialize APDS-9930 (configure I2C and initial values)
+  if ( apds.init() ) {
+    Serial.println(F("APDS-9930 initialization complete"));
+  } else {
+    Serial.println(F("Something went wrong during APDS-9930 init!"));
+  }
+  
+  // Adjust the Proximity sensor gain
+  if ( !apds.setProximityGain(PGAIN_1X) ) {
+    Serial.println(F("Something went wrong trying to set PGAIN"));
+  }
+  
+  // Start running the APDS-9930 proximity sensor (no interrupts)
+  if ( apds.enableProximitySensor(false) ) {
+    Serial.println(F("Proximity sensor is now running"));
+  } else {
+    Serial.println(F("Something went wrong during sensor init!"));
+    apds.enableProximitySensor(true);
+    apds.enableLightSensor(true);
+  }
+
+  #ifdef DUMP_REGS
+    /* Register dump */
+    uint8_t reg;
+    uint8_t val;
+
+    for(reg = 0x00; reg <= 0x19; reg++) {
+      if( (reg != 0x10) && \
+          (reg != 0x11) )
+      {
+        apds.wireReadDataByte(reg, val);
+        Serial.print(reg, HEX);
+        Serial.print(": 0x");
+        Serial.println(val, HEX);
+      }
+    }
+    apds.wireReadDataByte(0x1E, val);
+    Serial.print(0x1E, HEX);
+    Serial.print(": 0x");
+    Serial.println(val, HEX);
+  #endif
+  
+  //DEL
   run();
+  
+  //OLED
   StartScreen();
 }
 
-// the loop function runs over and over again forever
 void loop() {
+  
+  // Read the proximity value
+  if ( !apds.readProximity(proximity_data) ) {
+    Serial.println("Error reading proximity value");
+  } else {
+    Serial.print("Proximity: ");
+    Serial.print(proximity_data);
+    
+    apds.readProximity(proximity_data);
+    Serial.print(F("  Remapped: "));
+    Serial.println(proximity_data);
+    analogWrite(PWM_LED_PIN, proximity_data);
+  }
   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
   setBrightness(int bri);
   bool isCharging = true;
@@ -115,8 +179,8 @@ void loop() {
   } else {
     jaune(); // Pas en charge
   }
-  delay(1000);                      // wait for 1second
+  delay(1000);
   AfficherImage(0, 0, MasterPiece_width, MasterPiece_height, MasterPiece_bits);
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-  delay(1000);                      // wait for 100ms
+  delay(1000);  
 }
