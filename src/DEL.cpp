@@ -54,7 +54,7 @@ int adjustBrightness() {
 }
 
 void setBrightness(int brightness) {
-  int brightness = adjustBrightness();
+  brightness = adjustBrightness();
   strip.setBrightness(brightness);
   pixels.setBrightness(brightness);
 }
