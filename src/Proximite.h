@@ -4,3 +4,4 @@
 
 
 
+void StartProx(APDS9930 apds, uint16_t proximity_data, int proximity_max);
