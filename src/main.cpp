@@ -3,6 +3,8 @@
 #include "DEL.h"
 #include "Proximite.h"
 
+
+
 #define MasterPiece_width 128
 #define MasterPiece_height 64
 static unsigned char MasterPiece_bits[] PROGMEM = {
@@ -95,15 +97,24 @@ static unsigned char MasterPiece_bits[] PROGMEM = {
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
+  // Initialiser les LEDs et les capteurs
   pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(9600); // Pour déboguer et afficher des informations
+  run();
   StartScreen();
 }
 
 // the loop function runs over and over again forever
 void loop() {
   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+  setBrightness(int bri);
+  bool isCharging = true;
   AfficherInfo(10, 15);
+  if (isCharging) {
+    rouge(); // Charge active
+  } else {
+    jaune(); // Pas en charge
+  }
   delay(1000);                      // wait for 1second
   AfficherImage(0, 0, MasterPiece_width, MasterPiece_height, MasterPiece_bits);
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
