@@ -19,8 +19,6 @@
 
 void AfficherInfo(uint16_t nbrPresence, uint16_t nbrCharge);
 
-const uint8_t* choixImage(char ImageChoisi);
-
 void AfficherImage(int CordX, int CordY, int Width, int Height, const uint8_t *bitmap);
 
 void SetFont(const uint8_t* Font);
