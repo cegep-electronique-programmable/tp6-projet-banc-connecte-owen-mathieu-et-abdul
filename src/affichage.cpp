@@ -40,12 +40,8 @@ void AfficherInfo(uint16_t nbrPresence, uint16_t nbrCharge){
   u8g2.firstPage();
   do {
     u8g2.setCursor(0, 14);
-    u8g2.print("Nombre personnes: ");
-    u8g2.setCursor(100, 14);
     u8g2.print(PresenceS);
     u8g2.setCursor(0, 30);
-    u8g2.print("Nombre Charges: "); 
-    u8g2.setCursor(100, 30);
     u8g2.print(ChargeS);
   } while ( u8g2.nextPage() );
 }
