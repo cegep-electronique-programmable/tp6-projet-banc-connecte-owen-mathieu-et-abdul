@@ -1,6 +1,7 @@
 #include "Proximite.h"
 
 void StartProx(APDS9930 apds, uint16_t proximity_data, int proximity_max){
+    //Proximite
     Serial.println();
     Serial.println(F("------------------------"));
     Serial.println(F("APDS-9930 - ProximityLED"));
@@ -24,7 +25,7 @@ void StartProx(APDS9930 apds, uint16_t proximity_data, int proximity_max){
     } else {
         Serial.println(F("Something went wrong during sensor init!"));
         apds.enableProximitySensor(true);
-        apds.enableLightSensor(true);
+        //apds.enableLightSensor(true);
     }
 
     #ifdef DUMP_REGS

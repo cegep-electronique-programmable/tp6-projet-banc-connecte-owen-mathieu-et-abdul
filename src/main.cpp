@@ -10,6 +10,7 @@
 APDS9930 apds = APDS9930();
 uint16_t proximity_data = 0;
 int proximity_max = 0;
+bool isCharging = false;
 
 #define MasterPiece_width 128
 #define MasterPiece_height 64
@@ -131,16 +132,23 @@ void loop() {
     Serial.println(proximity_data);
     analogWrite(PWM_LED_PIN, proximity_data);
   }
+  delay(10);
   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
   setBrightness();
-  bool isCharging = true;
-  AfficherInfo(10, 15);
+  isCharging = true;
+  AfficherInfo(proximity_data, 15);
   if (isCharging) {
     rouge(); // Charge active
   } else {
     jaune(); // Pas en charge
   }
   delay(1000);
+  isCharging = false;
+  if (isCharging) {
+    rouge(); // Charge active
+  } else {
+    jaune(); // Pas en charge
+  }
   AfficherImage(0, 0, MasterPiece_width, MasterPiece_height, MasterPiece_bits);
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
   delay(1000);  
