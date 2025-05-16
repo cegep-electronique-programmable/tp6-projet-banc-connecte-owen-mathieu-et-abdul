@@ -112,6 +112,7 @@ const uint8_t* choixImage(char ImageChoisi){
 void SetFont(const uint8_t* Font){
   u8g2.setFont(Font);  // use chinese2 for all the glyphs of "你好世界"
   u8g2.setFontDirection(0);
+  u8g2.setFontDirection(1);
 }
 
 void ClearScreen(){
