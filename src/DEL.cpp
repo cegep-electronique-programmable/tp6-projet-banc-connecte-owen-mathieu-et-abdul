@@ -2,7 +2,7 @@
 
 #define PIN         1 
 #define NUMPIXELS   10 
-#define BRIGHTNESS  50 
+#define BRIGHTNESS  50  
 
 #define LIGHT_SENSOR_PIN A0
 
@@ -46,15 +46,16 @@ void jaune() {
     pixels.show();  
     delay(DELAYVAL); 
   }  
-}
+}/*
 int adjustBrightness() {
   int lightLevel = analogRead(LIGHT_SENSOR_PIN);
-  int brightness = map(lightLevel, 0, 1023, 255, 50);
+  int brightness = map(lightLevel, 0, 50, 50, 1);
+  brightness = constrain(brightness, 1, 50);
   return brightness;
-}
+}*/
 
 void setBrightness() {
-  int brightness = adjustBrightness();
-  strip.setBrightness(brightness);
-  pixels.setBrightness(brightness);
+ // int brightness = adjustBrightness();
+  strip.setBrightness(1);
+  pixels.setBrightness(1);
 }
