@@ -2,7 +2,7 @@
 
 #define PIN         1 
 #define NUMPIXELS   10 
-#define BRIGHTNESS  50 
+#define BRIGHTNESS  50  
 
 #define LIGHT_SENSOR_PIN A0
 
@@ -10,7 +10,7 @@
 Adafruit_NeoPixel strip(64, PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-#define DELAYVAL 500
+#define DELAYVAL 1
 
 
 void run() {
@@ -49,12 +49,12 @@ void jaune() {
 }
 int adjustBrightness() {
   int lightLevel = analogRead(LIGHT_SENSOR_PIN);
-  int brightness = map(lightLevel, 0, 1023, 255, 50);
+  int brightness = lightLevel;
   return brightness;
 }
 
-void setBrightness(int brightness) {
-  brightness = adjustBrightness();
+void setBrightness() {
+  int brightness = adjustBrightness();
   strip.setBrightness(brightness);
   pixels.setBrightness(brightness);
 }

@@ -12,5 +12,5 @@ void rouge();
 
 void jaune();
 
-void setBrightness(int brightness);
+void setBrightness();
 

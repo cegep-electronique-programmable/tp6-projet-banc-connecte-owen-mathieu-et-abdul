@@ -15,6 +15,7 @@ uint16_t proximity_data = 0;
 int proximity_max = 0;
 float Light_data = 0;
 static int flagpers = 0;
+bool isCharging = false;
 
 #define MasterPiece_width 128
 #define MasterPiece_height 64
@@ -111,18 +112,6 @@ void setup() {
   // Initialiser les LEDs et les capteurs
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600); // Pour déboguer et afficher des informations
-  //Proximite
-  Serial.println();
-  Serial.println(F("------------------------"));
-  Serial.println(F("APDS-9930 - ProximityLED"));
-  Serial.println(F("------------------------"));
-  
-  // Initialize APDS-9930 (configure I2C and initial values)
-  if ( apds.init() ) {
-    Serial.println(F("APDS-9930 initialization complete"));
-  } else {
-    Serial.println(F("Something went wrong during APDS-9930 init!"));
-  }
   
   // Adjust the Proximity sensor gain
   if ( !apds.setProximityGain(PGAIN_1X) ) {
@@ -165,6 +154,8 @@ void setup() {
     Serial.print(": 0x");
     Serial.println(val, HEX);
   #endif
+  //Proximite
+  StartProx(apds, proximity_data, proximity_max);
   
   //DEL
   run();
@@ -205,19 +196,25 @@ void loop() {
     }
   }
    
-  
   // Wait 250 ms before next reading
  // delay(250);
+  delay(10);
   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  setBrightness(int bri);
-  bool isCharging = true;
-  AfficherInfo(10, 15);
+  setBrightness();
+  isCharging = true;
+  AfficherInfo(proximity_data, 15);
   if (isCharging) {
     rouge(); // Charge active
   } else {
     jaune(); // Pas en charge
   }
   delay(1000);
+  isCharging = false;
+  if (isCharging) {
+    rouge(); // Charge active
+  } else {
+    jaune(); // Pas en charge
+  }
   AfficherImage(0, 0, MasterPiece_width, MasterPiece_height, MasterPiece_bits);
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
   delay(1000);  
