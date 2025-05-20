@@ -13,7 +13,8 @@
 APDS9930 apds = APDS9930();
 uint16_t proximity_data = 0;
 int proximity_max = 0;
-
+float Light_data = 0;
+static int flagpers = 0;
 void setup() {
   //analogReference(EXTERNAL);
   pinMode(PWM_LED_PIN, OUTPUT);
@@ -40,10 +41,17 @@ void setup() {
   // Start running the APDS-9930 proximity sensor (no interrupts)
   if ( apds.enableProximitySensor(false) ) {
     Serial.println(F("Proximity sensor is now running"));
-  } else {
+  }
+
+  else {
     Serial.println(F("Something went wrong during sensor init!"));
-    apds.enableProximitySensor(true);
-    apds.enableLightSensor(true);
+  if (apds.enableLightSensor(false) ) {
+    Serial.println(F("Light sensor is now running"));
+  }
+  else{
+    Serial.println(F("Something went wrong during sensor init!"));
+  } 
+    
   }
 
 #ifdef DUMP_REGS
@@ -77,24 +85,31 @@ void loop() {
     Serial.print("Proximity: ");
     Serial.print(proximity_data);
 
-    // This is an ugly hack to reduce sensor noise.
-    // You may want to adjust POFFSET instead.
-    /*
-    proximity_data -= 200;
-    if (proximity_data > 50000) {
-      proximity_data = 0;
-    }
-    if (proximity_data > proximity_max) {
-      proximity_max = proximity_data;
-    }
-    proximity_data = map(proximity_data, 0, proximity_max, 0, 1023);
-    */
+    
     apds.readProximity(proximity_data);
     Serial.print(F("  Remapped: "));
     Serial.println(proximity_data);
     analogWrite(PWM_LED_PIN, proximity_data);
+    delay(10);
+    if(!apds.readAmbientLightLux(Light_data)){
+      Serial.println("Error reading light value");
+    }
+    else{
+        Serial.print(" light value"); 
+        Serial.println(Light_data);
+      if (proximity_data> 550){
+   //     static int flagpers = 0;
+         flagpers=flagpers++;
+      if(Light_data== 20000 || Light_data== 2222  ){
+
+      }
+    }
+    else{}
+      Serial.print(flagpers);
+    }
   }
+}
+   
   
   // Wait 250 ms before next reading
-  delay(1000);
-}
+ // delay(250);
