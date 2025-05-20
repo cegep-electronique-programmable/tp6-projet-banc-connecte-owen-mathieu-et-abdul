@@ -46,16 +46,15 @@ void jaune() {
     pixels.show();  
     delay(DELAYVAL); 
   }  
-}/*
+}
 int adjustBrightness() {
   int lightLevel = analogRead(LIGHT_SENSOR_PIN);
-  int brightness = map(lightLevel, 0, 50, 50, 1);
-  brightness = constrain(brightness, 1, 50);
+  int brightness = 1;
   return brightness;
-}*/
+}
 
 void setBrightness() {
- // int brightness = adjustBrightness();
-  strip.setBrightness(1);
-  pixels.setBrightness(1);
+  int brightness = adjustBrightness();
+  strip.setBrightness(brightness);
+  pixels.setBrightness(brightness);
 }
