@@ -49,7 +49,7 @@ void jaune() {
 }
 int adjustBrightness() {
   int lightLevel = analogRead(LIGHT_SENSOR_PIN);
-  int brightness = 1;
+  int brightness = lightLevel;
   return brightness;
 }
 
