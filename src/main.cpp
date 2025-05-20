@@ -6,10 +6,15 @@
 #define DUMP_REGS
 #define PWM_LED_PIN       10
 
+#include <Wire.h>
+#include <APDS9930.h>
+
 // Global Variables
 APDS9930 apds = APDS9930();
 uint16_t proximity_data = 0;
 int proximity_max = 0;
+float Light_data = 0;
+static int flagpers = 0;
 bool isCharging = false;
 
 #define MasterPiece_width 128
@@ -108,6 +113,47 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600); // Pour déboguer et afficher des informations
   
+  // Adjust the Proximity sensor gain
+  if ( !apds.setProximityGain(PGAIN_1X) ) {
+    Serial.println(F("Something went wrong trying to set PGAIN"));
+  }
+  
+  // Start running the APDS-9930 proximity sensor (no interrupts)
+  if ( apds.enableProximitySensor(false) ) {
+    Serial.println(F("Proximity sensor is now running"));
+  }
+
+  else {
+    Serial.println(F("Something went wrong during sensor init!"));
+  if (apds.enableLightSensor(false) ) {
+    Serial.println(F("Light sensor is now running"));
+  }
+  else{
+    Serial.println(F("Something went wrong during sensor init!"));
+  } 
+    
+  }
+
+  #ifdef DUMP_REGS
+    /* Register dump */
+    uint8_t reg;
+    uint8_t val;
+
+    for(reg = 0x00; reg <= 0x19; reg++) {
+      if( (reg != 0x10) && \
+          (reg != 0x11) )
+      {
+        apds.wireReadDataByte(reg, val);
+        Serial.print(reg, HEX);
+        Serial.print(": 0x");
+        Serial.println(val, HEX);
+      }
+    }
+    apds.wireReadDataByte(0x1E, val);
+    Serial.print(0x1E, HEX);
+    Serial.print(": 0x");
+    Serial.println(val, HEX);
+  #endif
   //Proximite
   StartProx(apds, proximity_data, proximity_max);
   
@@ -131,7 +177,27 @@ void loop() {
     Serial.print(F("  Remapped: "));
     Serial.println(proximity_data);
     analogWrite(PWM_LED_PIN, proximity_data);
+    delay(10);
+    if(!apds.readAmbientLightLux(Light_data)){
+      Serial.println("Error reading light value");
+    }
+    else{
+        Serial.print(" light value"); 
+        Serial.println(Light_data);
+      if (proximity_data> 550){
+   //     static int flagpers = 0;
+         flagpers=flagpers++;
+      if(Light_data== 20000 || Light_data== 2222  ){
+
+      }
+    }
+    else{}
+      Serial.print(flagpers);
+    }
   }
+   
+  // Wait 250 ms before next reading
+ // delay(250);
   delay(10);
   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
   setBrightness();
