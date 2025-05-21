@@ -12,5 +12,5 @@ void rouge();
 
 void jaune();
 
-void setBrightness();
+void setBrightness(float Light_Data);
 

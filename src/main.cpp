@@ -2,6 +2,7 @@
 #include "affichage.h"
 #include "DEL.h"
 #include "Proximite.h"
+#include "Chargeur.h"
 
 #define DUMP_REGS
 #define PWM_LED_PIN       10
@@ -15,7 +16,9 @@ uint16_t proximity_data = 0;
 int proximity_max = 0;
 float Light_data = 0;
 static int flagpers = 0;
-bool isCharging = false;
+bool DoneOnce = true;
+bool flagchar = false;
+int isCharging = 0;
 
 #define MasterPiece_width 128
 #define MasterPiece_height 64
@@ -113,47 +116,6 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600); // Pour déboguer et afficher des informations
   
-  // Adjust the Proximity sensor gain
-  if ( !apds.setProximityGain(PGAIN_1X) ) {
-    Serial.println(F("Something went wrong trying to set PGAIN"));
-  }
-  
-  // Start running the APDS-9930 proximity sensor (no interrupts)
-  if ( apds.enableProximitySensor(false) ) {
-    Serial.println(F("Proximity sensor is now running"));
-  }
-
-  else {
-    Serial.println(F("Something went wrong during sensor init!"));
-  if (apds.enableLightSensor(false) ) {
-    Serial.println(F("Light sensor is now running"));
-  }
-  else{
-    Serial.println(F("Something went wrong during sensor init!"));
-  } 
-    
-  }
-
-  #ifdef DUMP_REGS
-    /* Register dump */
-    uint8_t reg;
-    uint8_t val;
-
-    for(reg = 0x00; reg <= 0x19; reg++) {
-      if( (reg != 0x10) && \
-          (reg != 0x11) )
-      {
-        apds.wireReadDataByte(reg, val);
-        Serial.print(reg, HEX);
-        Serial.print(": 0x");
-        Serial.println(val, HEX);
-      }
-    }
-    apds.wireReadDataByte(0x1E, val);
-    Serial.print(0x1E, HEX);
-    Serial.print(": 0x");
-    Serial.println(val, HEX);
-  #endif
   //Proximite
   StartProx(apds, proximity_data, proximity_max);
   
@@ -184,37 +146,38 @@ void loop() {
     else{
         Serial.print(" light value"); 
         Serial.println(Light_data);
-      if (proximity_data> 550){
+      if (proximity_data > 550){
    //     static int flagpers = 0;
-         flagpers=flagpers++;
-      if(Light_data== 20000 || Light_data== 2222  ){
-
+         if (DoneOnce){
+            flagpers++;
+            DoneOnce = false;
+         }
       }
-    }
+      else if (proximity_data < 550)
+      {
+        DoneOnce = true;
+      }
+         
     else{}
       Serial.print(flagpers);
     }
   }
-   
+   setBrightness(Light_data);
   // Wait 250 ms before next reading
  // delay(250);
   delay(10);
   digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  setBrightness();
-  isCharging = true;
-  AfficherInfo(proximity_data, 15);
-  if (isCharging) {
+  setBrightness(Light_data);
+  isCharging = Charge();
+  AfficherInfo(flagpers, flagchar);
+  if (isCharging < 512) {
     rouge(); // Charge active
+    flagchar = true;
   } else {
     jaune(); // Pas en charge
+    flagchar = false;
   }
   delay(1000);
-  isCharging = false;
-  if (isCharging) {
-    rouge(); // Charge active
-  } else {
-    jaune(); // Pas en charge
-  }
   AfficherImage(0, 0, MasterPiece_width, MasterPiece_height, MasterPiece_bits);
   digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
   delay(1000);  

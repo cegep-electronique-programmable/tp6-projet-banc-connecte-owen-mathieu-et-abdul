@@ -40,8 +40,8 @@ void AfficherInfo(uint16_t nbrPresence, uint16_t nbrCharge){
   u8g2.firstPage();
   do {
     u8g2.setCursor(0, 14);
-    u8g2.print(PresenceS);
+    u8g2.print(nbrPresence);
     u8g2.setCursor(0, 30);
-    u8g2.print(ChargeS); 
+    u8g2.print(nbrCharge);
   } while ( u8g2.nextPage() );
 }

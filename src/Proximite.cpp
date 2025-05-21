@@ -27,6 +27,13 @@ void StartProx(APDS9930 apds, uint16_t proximity_data, int proximity_max){
         apds.enableProximitySensor(true);
         //apds.enableLightSensor(true);
     }
+    if (apds.enableLightSensor(false) ) {
+    Serial.println(F("Light sensor is now running"));
+  }
+  else{
+    Serial.println(F("Something went wrong during sensor init!"));
+    apds.enableLightSensor(true);
+  } 
 
     #ifdef DUMP_REGS
         /* Register dump */
@@ -49,6 +56,3 @@ void StartProx(APDS9930 apds, uint16_t proximity_data, int proximity_max){
         Serial.println(val, HEX);
     #endif
 }
- 
-
- 
