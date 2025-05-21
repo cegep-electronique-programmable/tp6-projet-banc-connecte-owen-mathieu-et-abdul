@@ -11,7 +11,7 @@
 Adafruit_NeoPixel strip(64, PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-#define DELAYVAL 1
+#define DELAYVAL 25
 
 
 void run() {
