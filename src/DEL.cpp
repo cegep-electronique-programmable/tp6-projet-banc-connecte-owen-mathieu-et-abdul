@@ -8,7 +8,7 @@
 #define LIGHT_SENSOR_PIN 10
 
 
-Adafruit_NeoPixel strip(64, PIN, NEO_GRB + NEO_KHZ800);
+//Adafruit_NeoPixel strip(64, PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 #define DELAYVAL 1
@@ -19,17 +19,8 @@ void run() {
     clock_prescale_set(clock_div_1);
   #endif
     pixels.begin();
-    strip.show();
-    strip.setBrightness(BRIGHTNESS); 
-}
-
-void verte() {
-  pixels.clear(); 
-  for (int i = 0; i < NUMPIXELS; i++) { 
-    pixels.setPixelColor(i, pixels.Color(0, 150, 0));
-    pixels.show();  
-    delay(DELAYVAL); 
-  }  
+    //strip.show();
+    //strip.setBrightness(BRIGHTNESS); 
 }
 
 void rouge() {
@@ -40,6 +31,7 @@ void rouge() {
     delay(DELAYVAL); 
   }  
 }
+
 void jaune() {
   pixels.clear(); 
   for (int i = 0; i < NUMPIXELS; i++) { 
@@ -56,6 +48,6 @@ float adjustBrightness(){
 }
 
 void setBrightness(float Light_Data) {
-  strip.setBrightness(Light_Data);
+  //strip.setBrightness(Light_Data);
   pixels.setBrightness(Light_Data);
 }
