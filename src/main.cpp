@@ -11,19 +11,19 @@
 #include <APDS9930.h>
 
 // Global Variables
-APDS9930 apds = APDS9930();
+APDS9930 apds = APDS9930(); // Create an instance of the APDS9930 class
 uint16_t proximity_data = 0;
 int proximity_max = 0;
 float Light_data = 0;
 static int flagpers = 0;
 bool DoneOnce = true;
-bool flagchar = false;
+bool flagchar = false; 
 int isCharging = 0;
 bool flag100ms = false;
 int Total100ms = 0;
 
-#define MasterPiece_width 128
-#define MasterPiece_height 64
+#define MasterPiece_width 128 // Largeur de l'image
+#define MasterPiece_height 64 // Hauteur de l'image
 static unsigned char MasterPiece_bits[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -110,7 +110,7 @@ static unsigned char MasterPiece_bits[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-  0x00, 0x00, 0x00, 0x00, };
+  0x00, 0x00, 0x00, 0x00, }; // 128x64 px
 
 void TimerInterrupt(void);
   // the setup function runs once when you press reset or power the board
@@ -128,14 +128,14 @@ void setup() {
   //OLED
   StartScreen();
 
-  AfficherInfo(flagpers, flagchar);
+  AfficherInfo(flagpers, flagchar);// Afficher l'écran de démarrage
   
-  timer1_attachInterrupt(TimerInterrupt);
-  timer1_enable(TIM_DIV1, TIM_EDGE, TIM_SINGLE);
-  timer1_write(8000000); //100ms delay
+  timer1_attachInterrupt(TimerInterrupt); // Attacher l'interruption
+  timer1_enable(TIM_DIV1, TIM_EDGE, TIM_SINGLE); // Activer le timer
+  timer1_write(8000000); //100ms delay 
 }
 
-void loop() {
+void loop() {   
   if (flag100ms){
     Total100ms++;
     isCharging = Charge();
@@ -188,7 +188,8 @@ void loop() {
   }
 
   else if (Total100ms < 180){
-    AfficherImage(0, 0, MasterPiece_width, MasterPiece_height, MasterPiece_bits);
+    // Afficher l'image
+    AfficherImage(0, 0, MasterPiece_width, MasterPiece_height, MasterPiece_bits);   
   }
 
   else{
@@ -197,7 +198,7 @@ void loop() {
   
 }
 
-void TimerInterrupt(void){
-  timer1_write(8000000);
+void TimerInterrupt(void){ 
+  timer1_write(8000000); 
   flag100ms = true;
 }
