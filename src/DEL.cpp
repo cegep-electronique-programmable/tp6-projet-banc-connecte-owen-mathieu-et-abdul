@@ -11,7 +11,7 @@
 Adafruit_NeoPixel strip(64, PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
-#define DELAYVAL 1            // Temps d'attente entre les changements de couleur
+//#define DELAYVAL 1            // Temps d'attente entre les changements de couleur
 
 // Fonctoin d'initialisation ds DELs
 void run() {
@@ -29,7 +29,7 @@ void rouge() {
   for (int i = 0; i < NUMPIXELS; i++) { 
     pixels.setPixelColor(i, pixels.Color(255, 0, 0)); // Rouge
     pixels.show();  
-    delay(DELAYVAL); 
+  //  delay(DELAYVAL); 
   }  
 }
 
@@ -39,7 +39,7 @@ void jaune() {
   for (int i = 0; i < NUMPIXELS; i++) { 
     pixels.setPixelColor(i, pixels.Color(255, 255, 0)); // Jaune
     pixels.show();  
-    delay(DELAYVAL); 
+   // delay(DELAYVAL); 
   }  
 }
  // Fonction pour lire le niveau de luminosité
