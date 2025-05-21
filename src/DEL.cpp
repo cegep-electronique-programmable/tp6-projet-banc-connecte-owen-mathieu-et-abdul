@@ -8,8 +8,8 @@
 #define LIGHT_SENSOR_PIN 10
 
 
-//Adafruit_NeoPixel strip(64, PIN, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip(10, PIN, NEO_GRB + NEO_KHZ800);
+//Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
 #define DELAYVAL 1
 
@@ -19,8 +19,8 @@ void run() {
     clock_prescale_set(clock_div_1);
   #endif
     pixels.begin();
-    //strip.show();
-    //strip.setBrightness(BRIGHTNESS); 
+    strip.show();
+    strip.setBrightness(BRIGHTNESS); 
 }
 
 void rouge() {
@@ -48,6 +48,6 @@ float adjustBrightness(){
 }
 
 void setBrightness(float Light_Data) {
-  //strip.setBrightness(Light_Data);
+  strip.setBrightness(Light_Data);
   pixels.setBrightness(Light_Data);
 }
