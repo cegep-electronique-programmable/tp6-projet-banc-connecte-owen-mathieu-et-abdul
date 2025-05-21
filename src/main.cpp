@@ -19,6 +19,8 @@ static int flagpers = 0;
 bool DoneOnce = true;
 bool flagchar = false;
 int isCharging = 0;
+bool flag100ms = false;
+int Total100ms = 0;
 
 #define MasterPiece_width 128
 #define MasterPiece_height 64
@@ -110,7 +112,8 @@ static unsigned char MasterPiece_bits[] PROGMEM = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, };
 
-// the setup function runs once when you press reset or power the board
+void TimerInterrupt(void);
+  // the setup function runs once when you press reset or power the board
 void setup() {
   // Initialiser les LEDs et les capteurs
   pinMode(LED_BUILTIN, OUTPUT);
@@ -124,61 +127,77 @@ void setup() {
   
   //OLED
   StartScreen();
+
+  AfficherInfo(flagpers, flagchar);
+  
+  timer1_attachInterrupt(TimerInterrupt);
+  timer1_enable(TIM_DIV1, TIM_EDGE, TIM_SINGLE);
+  timer1_write(8000000); //100ms delay
 }
 
 void loop() {
-  
-  // Read the proximity value
-  if ( !apds.readProximity(proximity_data) ) {
-    Serial.println("Error reading proximity value");
-  } else {
-    Serial.print("Proximity: ");
-    Serial.print(proximity_data);
+  if (flag100ms){
+    Total100ms++;
+    isCharging = Charge();
+    if (isCharging < 512) {
+      rouge(); // Charge active
+      flagchar = true;
+    } else {
+      jaune(); // Pas en charge
+      flagchar = false;
+    }
+  }
+  if (Total100ms < 150){
+      // Read the proximity value
+    if ( !apds.readProximity(proximity_data) ) {
+      Serial.println("Error reading proximity value");
+    } else {
+      Serial.print("Proximity: ");
+      Serial.print(proximity_data);
+      
+      apds.readProximity(proximity_data);
+      Serial.print(F("  Remapped: "));
+      Serial.println(proximity_data);
+      //analogWrite(PWM_LED_PIN, proximity_data);
+      delay(10);
+      if(!apds.readAmbientLightLux(Light_data)){
+        Serial.println("Error reading light value");
+      }
+      else{
+          Serial.print(" light value"); 
+          Serial.println(Light_data);
+        if (proximity_data > 550){
+    //     static int flagpers = 0;
+          if (DoneOnce){
+              flagpers++;
+              DoneOnce = false;
+          }
+        }
+        else if (proximity_data < 550)
+        {
+          DoneOnce = true;
+          AfficherInfo(flagpers, flagchar);
+        }
+          
+      else{}
+        Serial.print(flagpers);
+      }
+    }
+    setBrightness(Light_data);
     
-    apds.readProximity(proximity_data);
-    Serial.print(F("  Remapped: "));
-    Serial.println(proximity_data);
-    analogWrite(PWM_LED_PIN, proximity_data);
-    delay(10);
-    if(!apds.readAmbientLightLux(Light_data)){
-      Serial.println("Error reading light value");
-    }
-    else{
-        Serial.print(" light value"); 
-        Serial.println(Light_data);
-      if (proximity_data > 550){
-   //     static int flagpers = 0;
-         if (DoneOnce){
-            flagpers++;
-            DoneOnce = false;
-         }
-      }
-      else if (proximity_data < 550)
-      {
-        DoneOnce = true;
-      }
-         
-    else{}
-      Serial.print(flagpers);
-    }
   }
-   setBrightness(Light_data);
-  // Wait 250 ms before next reading
- // delay(250);
-  delay(10);
-  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-  setBrightness(Light_data);
-  isCharging = Charge();
-  AfficherInfo(flagpers, flagchar);
-  if (isCharging < 512) {
-    rouge(); // Charge active
-    flagchar = true;
-  } else {
-    jaune(); // Pas en charge
-    flagchar = false;
+
+  else if (Total100ms < 180){
+    AfficherImage(0, 0, MasterPiece_width, MasterPiece_height, MasterPiece_bits);
   }
-  delay(1000);
-  AfficherImage(0, 0, MasterPiece_width, MasterPiece_height, MasterPiece_bits);
-  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-  delay(1000);  
+
+  else{
+    Total100ms = 0;
+  }
+  
+}
+
+void TimerInterrupt(void){
+  timer1_write(8000000);
+  flag100ms = true;
 }
