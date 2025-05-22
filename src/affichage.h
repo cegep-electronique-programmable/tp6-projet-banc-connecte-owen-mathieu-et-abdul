@@ -9,18 +9,22 @@
  *
  */
 
+ // Font utilisable: u8g2_font_unifont_t_chinese2
+
 #ifndef AFFICHAGE_H
 #define AFFICHAGE_H
 
 #include <Arduino.h>
+#include <U8g2lib.h>
 
+void AfficherInfo(uint16_t nbrPresence, uint16_t nbrCharge);
 
+void AfficherImage(int CordX, int CordY, int Width, int Height, const uint8_t *bitmap);
 
+void SetFont(const uint8_t* Font);
 
+void ClearScreen();
 
-void afficherInfo(uint16_t nbrPresence, uint16_t nbrCharge);
+void StartScreen();
 
-
-
-
-#endif // AFFICHAGE_H
+#endif
