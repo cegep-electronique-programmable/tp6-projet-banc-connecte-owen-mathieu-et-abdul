@@ -22,6 +22,11 @@ static int flagchar = 0;
 int isCharging = 0;
 bool flag100ms = false;
 int Total100ms = 0;
+int data1=0;  
+int data2=0; 
+int data3=0; 
+int data4=0; 
+int dataTotal=0; 
 
 #define MasterPiece_width 128 // Largeur de l'image
 #define MasterPiece_height 64 // Hauteur de l'image
@@ -188,6 +193,15 @@ void loop() {
         Serial.print(flagpers);
       }
     }
+    for(int i=0;i<4;i++){
+        apds.readAmbientLightLux(Light_data)
+        data1 = Light_data;
+        data2 = data1;
+        data2 = data1;
+        data3 = data2;
+        data4 = data3;
+      }
+      datatotal =(data1+data2+data3+data4)/4;
     setBrightness(Light_data);
 
   if (Total100ms < 150){
