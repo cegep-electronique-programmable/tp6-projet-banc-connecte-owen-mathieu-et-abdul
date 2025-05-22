@@ -168,7 +168,6 @@ void loop() {
       Serial.print(F("  Remapped: "));
       Serial.println(proximity_data);
       //analogWrite(PWM_LED_PIN, proximity_data);
-      delay(10);
       // condition qui permet de verifier qu'on lit bien le capteur de proximité
       if(!apds.readAmbientLightLux(Light_data)){
         Serial.println("Error reading light value");

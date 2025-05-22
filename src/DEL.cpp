@@ -19,8 +19,8 @@ void run() {
     clock_prescale_set(clock_div_1);
   #endif
     pixels.begin();           // Initialisation de la bande LED
-    strip.show();             // Initialisation de la bande LED
-    strip.setBrightness(BRIGHTNESS);  // Réglage de la luminosité
+  //  strip.show();             // Initialisation de la bande LED
+  //  strip.setBrightness(BRIGHTNESS);  // Réglage de la luminosité
 }
 
 // Fonction pour changer la couleur a rouge
@@ -50,6 +50,6 @@ float adjustBrightness(){
 }
   // Fonction pour changer la luminosité
 void setBrightness(float Light_Data) {
-  strip.setBrightness(Light_Data);  
+  //strip.setBrightness(Light_Data);
   pixels.setBrightness(Light_Data);
 }
