@@ -1,30 +1,55 @@
-#include "DEL.h"
-#include <Arduino.h>
-#include <Adafruit_NeoPixel.h>
-#ifdef __AVR__
- #include <avr/power.h> // Required for 16 MHz Adafruit Trinket
-#endif
-#include "DEL.h"
+#include "DEL.h" // inclure le fichier d'en-tête DEL.h
 
-void setup() {
-  // Initialiser les LEDs et les capteurs
-  pinMode(LED_BUILTIN, OUTPUT);
-  run();
-  Serial.begin(9600); // Pour déboguer et afficher des informations
+// définition des constantes
+#define PIN         1         // Broche dedonnée pour la DEL
+#define NUMPIXELS   10        // Nombre de pixels dans la bande LED
+#define BRIGHTNESS  50        // Luminosité de la DEL
+
+#define LIGHT_SENSOR_PIN 10   // Broche pour le capteur de lumière
+
+// Initialisation de la bande LED
+Adafruit_NeoPixel strip(64, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
+//#define DELAYVAL 1            // Temps d'attente entre les changements de couleur
+
+// Fonctoin d'initialisation ds DELs
+void run() {
+  #if defined(__AVR_ATtiny85__) && (F_CPU == 16000000)
+    clock_prescale_set(clock_div_1);
+  #endif
+    pixels.begin();           // Initialisation de la bande LED
+    strip.show();             // Initialisation de la bande LED
+    strip.setBrightness(BRIGHTNESS);  // Réglage de la luminosité
 }
 
-void loop() {
-  setBrightness(); // Ajuster la luminosité selon l'environnement
+// Fonction pour changer la couleur a rouge
+void rouge() {
+  pixels.clear(); 
+  for (int i = 0; i < NUMPIXELS; i++) { 
+    pixels.setPixelColor(i, pixels.Color(255, 0, 0)); // Rouge
+    pixels.show();  
+  //  delay(DELAYVAL); 
+  }  
+}
 
-  // Simuler l'état de charge
-  bool isCharging = true; // Mettre à jour cette variable en fonction de l'état réel du chargeur
-
-  // Si l'appareil est en charge, allumer les LEDs en rouge, sinon en jaune
-  if (isCharging) {
-    rouge(); // Charge active
-  } else {
-    jaune(); // Pas en charge
-  }
-
-  delay(1000); // Attendre 1 seconde avant la prochaine mise à jour
+// Fonction pour changer la couleur a jaune
+void jaune() {
+  pixels.clear();   // Effacer la bande LED
+  for (int i = 0; i < NUMPIXELS; i++) { 
+    pixels.setPixelColor(i, pixels.Color(255, 255, 0)); // Jaune
+    pixels.show();  
+   // delay(DELAYVAL); 
+  }  
+}
+ // Fonction pour lire le niveau de luminosité
+float adjustBrightness(){
+  float lightLevel = analogRead(LIGHT_SENSOR_PIN); // lire la valeur du capteur de lumière
+  float brightness = lightLevel;
+  return brightness;
+}
+  // Fonction pour changer la luminosité
+void setBrightness(float Light_Data) {
+  strip.setBrightness(Light_Data);  
+  pixels.setBrightness(Light_Data);
 }
