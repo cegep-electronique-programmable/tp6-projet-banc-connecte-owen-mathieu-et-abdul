@@ -12,10 +12,10 @@
 
 // Global Variables
 APDS9930 apds = APDS9930(); // Create an instance of the APDS9930 class
-uint16_t proximity_data = 0;
-int proximity_max = 0;
-float Light_data = 0;
-static int flagpers = 0;
+uint16_t proximity_data = 0;// variable qui prendra la valeur du capteur de proximité
+int proximity_max = 0; 
+float Light_data = 0;// variable qui prendra la valeur de capteur de lumiere
+static int flagpers = 0; variable qui va determiner le nombre de personne passé
 bool DoneOnce = true;
 bool flagchar = false; 
 int isCharging = 0;
@@ -160,14 +160,16 @@ void loop() {
       Serial.println(proximity_data);
       //analogWrite(PWM_LED_PIN, proximity_data);
       delay(10);
+      // condition qui permet de verifier qu'on lit bien le capteur de proximité
       if(!apds.readAmbientLightLux(Light_data)){
         Serial.println("Error reading light value");
       }
       else{
           Serial.print(" light value"); 
           Serial.println(Light_data);
+          // condition qui verifier qu'une autre personne est passe seuil de 550
         if (proximity_data > 550){
-    //     static int flagpers = 0;
+    //   condition qui permet d'attendre qu'une autre personne passe avant d'incrementer la valeur
           if (DoneOnce){
               flagpers++;
               DoneOnce = false;

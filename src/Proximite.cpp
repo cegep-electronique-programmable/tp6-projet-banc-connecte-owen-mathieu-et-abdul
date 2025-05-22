@@ -27,6 +27,7 @@ void StartProx(APDS9930 apds, uint16_t proximity_data, int proximity_max){
         apds.enableProximitySensor(true);
         //apds.enableLightSensor(true);
     }
+    //active le capteur de lumiere
     if (apds.enableLightSensor(false) ) {
     Serial.println(F("Light sensor is now running"));
   }
