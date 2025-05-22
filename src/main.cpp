@@ -16,8 +16,9 @@ uint16_t proximity_data = 0;// variable qui prendra la valeur du capteur de prox
 int proximity_max = 0; 
 float Light_data = 0;// variable qui prendra la valeur de capteur de lumiere
 static int flagpers = 0;// variable qui va determiner le nombre de personne passé
-bool DoneOnce = true;
-bool flagchar = false; 
+bool DoneOncePers = true;
+bool DoneOnceChar = true;
+static int flagchar = 0; 
 int isCharging = 0;
 bool flag100ms = false;
 int Total100ms = 0;
@@ -140,15 +141,18 @@ void loop() {
     Total100ms++;
     isCharging = Charge();
     if (isCharging < 512) {
+      if (DoneOnceChar){
+              flagchar++;
+              DoneOnceChar = false;
+        }
       rouge(); // Charge active
-      flagchar = true;
     } else {
       jaune(); // Pas en charge
-      flagchar = false;
+      DoneOnceChar = true;
     }
   }
-  if (Total100ms < 150){
-      // Read the proximity value
+
+  // Read the proximity value
     if ( !apds.readProximity(proximity_data) ) {
       Serial.println("Error reading proximity value");
     } else {
@@ -170,15 +174,14 @@ void loop() {
           // condition qui verifier qu'une autre personne est passe seuil de 550
         if (proximity_data > 550){
     //   condition qui permet d'attendre qu'une autre personne passe avant d'incrementer la valeur
-          if (DoneOnce){
+          if (DoneOncePers){
               flagpers++;
-              DoneOnce = false;
+              DoneOncePers = false;
           }
         }
         else if (proximity_data < 550)
         {
-          DoneOnce = true;
-          AfficherInfo(flagpers, flagchar);
+          DoneOncePers = true;
         }
           
       else{}
@@ -186,7 +189,9 @@ void loop() {
       }
     }
     setBrightness(Light_data);
-    
+
+  if (Total100ms < 150){
+    AfficherInfo(flagpers, flagchar);
   }
 
   else if (Total100ms < 180){
